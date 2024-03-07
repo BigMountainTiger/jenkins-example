@@ -1,0 +1,40 @@
+#!/bin/bash
+
+SCRIPT_PATH="$(dirname -- "${BASH_SOURCE[0]}")"
+DOCKER_PATH="$SCRIPT_PATH/../docker"
+JENKINS_HOME="$DOCKER_PATH/jenkins_home"
+
+red() {
+    echo '\033[1;31m'$1'\033[0m'
+}
+WHAT=$1
+case "$WHAT" in
+    save-admin-token|s)
+        TOKEN=$(sudo cat $JENKINS_HOME/secrets/initialAdminPassword)
+        echo $TOKEN > $JENKINS_HOME/initialAdminPassword
+        echo "Jenkins admin token saved"
+        echo "Run 'jenkins-util g' to retrieve it"
+
+        ;;
+    get-admin-token|g)
+        TOKEN=$(cat $JENKINS_HOME/initialAdminPassword)
+        echo $TOKEN
+
+        ;;
+    clear-jenkins-home|c)
+        sudo rm -rf $JENKINS_HOME
+
+        # Create the volume directory before mount to the docker
+        # container => so it owned outside the docker container
+        mkdir $JENKINS_HOME
+        ls -la $JENKINS_HOME
+
+        ;;
+    *)
+        echo -e "Only the following operations are supported:\n"
+        echo -e "jenkins-util [$(red s)]save-admin-token, save the admin token in a file that is accessible out of the docker container"
+        echo -e "jenkins-util [$(red g)]get-admin-token, get the admin token, no need for sudo"
+        echo -e "jenkins-util [$(red c)]clear-jenkins-home"
+        exit 1
+        ;;
+esac

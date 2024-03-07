@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/jenkins_home": true,
+        "**/.downloads": true,
+    }
+}

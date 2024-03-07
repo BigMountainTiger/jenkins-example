@@ -1,0 +1,4 @@
+It is possible to configure build tiggers
+It can be done either though a web-hook or SCM (Source Control Management) pull schedule
+
+The build is triggered by ewb-hook or SCM only when there is a commit
